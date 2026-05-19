@@ -28,9 +28,23 @@ test.beforeEach(async ({ page }) => {
   helpers = new Helpers(page);
   loginOrSignupPage = new LoginOrSignupPage(page, helpers);
 
-  await page.goto('https://automationexercise.com/');
+  await page.goto('/'); //utilises baseURL in Playwright.config
   await expect(page).toHaveTitle(/Automation Exercise/);
-  await page.getByRole('button', { name: 'Consent' }).click();
+
+  // Cookie Consent button behaves differently in CI vs local. Playwright can expose the CI environment setup
+  if (process.env.CI) {
+    // Running in GitHub Actions — consent may not appear, skip it
+    const consentButton = page.getByRole('button', { name: 'Consent' });
+    if (await consentButton.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await consentButton.click();
+    }else{
+      console.log('CI Information: Cookie Consent button not present — skipping');
+    }
+  } else {
+    // Running locally — consent MUST appear, fail clearly if it doesn't
+    await page.getByRole('button', { name: 'Consent' }).click();
+  }
+
   await expect(page.getByRole('heading', { name: 'CATEGORY' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'FEATURES ITEMS' })).toBeVisible();
 });
