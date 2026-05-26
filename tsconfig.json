@@ -10,7 +10,9 @@
   },
   "include": [
     "tests/**/*.ts",
+    "tests-api/**/*.ts",
     "helpers/**/*.ts",
+    "pageObjects/**/*.ts",
     "playwright.config.ts"
   ]
 }

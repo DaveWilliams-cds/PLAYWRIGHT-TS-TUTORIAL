@@ -20,6 +20,8 @@ npx playwright test
 # Run test in headed mode:
 npx playwright test --headed
 
-# Run only one file:
+# Run only one file for functional tests - headed (remove --headed for headless execution):
 npx playwright test tests/homepage.spec.ts --headed
 
+# Run only one file for functional tests
+npx playwright test tests-api/productsList.spec.ts
